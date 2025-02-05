@@ -3,52 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Wydajnościowy</title>
+    <title>Papieżaki</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
             background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        #info {
-            margin-top: 20px;
-            font-size: 18px;
+
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #papiez {
+            cursor: pointer;
+            width: 150px;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .papiezak {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* Okrągłe papieże */
+            animation: float 5s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Test Wydajnościowy Telefonu</h1>
-    <p>Ten kod stopniowo zwiększa obciążenie procesora i pamięci.</p>
-    <button id="startTest">Rozpocznij Test</button>
-    <div id="info">
-        <p>Liczba elementów: <span id="elementCount">0</span></p>
-        <p>Zużycie pamięci: <span id="memoryUsage">0 MB</span></p>
+    <div id="container">
+        <!-- Główny papież na środku -->
+        <img id="papiez" src="papiez_glowny.jpg" alt="Papież">
     </div>
-
+    <audio id="background-music" loop>
+        <source src="papiez_music.mp3" type="audio/mpeg">
+        Twoja przeglądarka nie obsługuje elementu audio.
+    </audio>
     <script>
-        let elementCount = 0;
-        let memoryUsage = 0;
-        let intervalId;
+        // Automatyczne odtwarzanie muzyki po załadowaniu strony
+        window.onload = function() {
+            const audio = document.getElementById('background-music');
+            audio.play().catch(error => {
+                console.log("Automatyczne odtwarzanie zablokowane. Kliknij na stronę, aby odtworzyć muzykę.");
+            });
+        };
 
-        function createElements() {
-            const container = document.body;
-            for (let i = 0; i < 1000; i++) {
-                const div = document.createElement('div');
-                div.textContent = `Element ${elementCount + i}`;
-                container.appendChild(div);
+        // Odtwarzanie muzyki po kliknięciu na stronę (opcjonalnie)
+        document.body.addEventListener('click', function() {
+            const audio = document.getElementById('background-music');
+            if (audio.paused) {
+                audio.play();
             }
-            elementCount += 1000;
-            document.getElementById('elementCount').textContent = elementCount;
-
-            // Szacowanie zużycia pamięci
-            memoryUsage = (performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(2);
-            document.getElementById('memoryUsage').textContent = memoryUsage;
-        }
-
-        document.getElementById('startTest').addEventListener('click', () => {
-            intervalId = setInterval(createElements, 100); // Tworzy elementy co 100 ms
         });
+
+        // Dodawanie papieżaków po kliknięciu na obrazek papieża
+        document.getElementById('papiez').addEventListener('click', function(event) {
+            const container = document.getElementById('container');
+            
+            // Tworzenie nowego papieżaka
+            const newPapiezak = document.createElement('img');
+            newPapiezak.src = "papiez_respiany.jpg"; // Inny obrazek dla respiących papieżaków
+            newPapiezak.classList.add('papiezak');
+            
+            // Losowa pozycja na ekranie
+            const x = Math.random() * (window.innerWidth - 50);
+            const y = Math.random() * (window.innerHeight - 50);
+            newPapiezak.style.left = `${x}px`;
+            newPapiezak.style.top = `${y}px`;
+            
+            // Dodanie nowego papieżaka do kontenera
+            container.appendChild(newPapiezak);
+
+            // Uruchomienie animacji odbijania
+            startBouncing(newPapiezak);
+            
+            // Efekt powiększenia przy kliknięciu
+            const papiez = document.getElementById('papiez');
+            papiez.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                papiez.style.transform = 'scale(1)';
+            }, 200);
+        });
+
+        // Funkcja do odbijania papieżaków od krawędzi ekranu
+        function startBouncing(element) {
+            let x = Math.random() * (window.innerWidth - 50);
+            let y = Math.random() * (window.innerHeight - 50);
+            let dx = 2 + Math.random() * 2; // Prędkość pozioma
+            let dy = 2 + Math.random() * 2; // Prędkość pionowa
+
+            function animate() {
+                x += dx;
+                y += dy;
+
+                // Odbijanie od krawędzi ekranu
+                if (x + 50 > window.innerWidth || x < 0) {
+                    dx = -dx;
+                }
+                if (y + 50 > window.innerHeight || y < 0) {
+                    dy = -dy;
+                }
+
+                element.style.left = `${x}px`;
+                element.style.top = `${y}px`;
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
     </script>
 </body>
 </html>
