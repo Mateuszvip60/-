@@ -48,7 +48,8 @@
 </head>
 <body>
     <div id="container">
-        <img id="papiez" src="papiez.jpg" alt="Papież">
+        <!-- Główny obrazek papieża -->
+        <img id="papiez" src="papiez_glowny.jpg" alt="Papież">
     </div>
     <audio id="background-music" loop>
         <source src="papiez_music.mp3" type="audio/mpeg">
@@ -78,7 +79,7 @@
             
             // Tworzenie nowego papieżaka
             const newPapiezak = document.createElement('img');
-            newPapiezak.src = papiez.src;
+            newPapiezak.src = "papiez_respiany.jpg"; // Inny obrazek dla respiących papieżaków
             newPapiezak.classList.add('papiezak');
             
             // Losowa pozycja na ekranie
