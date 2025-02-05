@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papieżak</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #papiez {
+            cursor: pointer;
+            width: 150px;
+            height: auto;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .papiezak {
+            position: absolute;
+            width: 150px;
+            height: auto;
+            animation: float 5s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <img id="papiez" src="papiez.jpg" alt="Papież">
+    </div>
+    <audio id="background-music" loop>
+        <source src="papiez_music.mp3" type="audio/mpeg">
+        Twoja przeglądarka nie obsługuje elementu audio.
+    </audio>
+    <script>
+        // Automatyczne odtwarzanie muzyki po załadowaniu strony
+        window.onload = function() {
+            const audio = document.getElementById('background-music');
+            audio.play().catch(error => {
+                console.log("Automatyczne odtwarzanie zablokowane. Kliknij na stronę, aby odtworzyć muzykę.");
+            });
+        };
+
+        // Odtwarzanie muzyki po kliknięciu na stronę (opcjonalnie)
+        document.body.addEventListener('click', function() {
+            const audio = document.getElementById('background-music');
+            if (audio.paused) {
+                audio.play();
+            }
+        });
+
+        // Dodawanie papieżaków po kliknięciu na obrazek papieża
+        document.getElementById('papiez').addEventListener('click', function(event) {
+            const container = document.getElementById('container');
+            const papiez = document.getElementById('papiez');
+            
+            // Tworzenie nowego papieżaka
+            const newPapiezak = document.createElement('img');
+            newPapiezak.src = papiez.src;
+            newPapiezak.classList.add('papiezak');
+            
+            // Losowa pozycja na ekranie
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 150);
+            newPapiezak.style.left = `${x}px`;
+            newPapiezak.style.top = `${y}px`;
+            
+            // Dodanie nowego papieżaka do kontenera
+            container.appendChild(newPapiezak);
+            
+            // Efekt powiększenia przy kliknięciu
+            papiez.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                papiez.style.transform = 'scale(1)';
+            }, 200);
+        });
+    </script>
+</body>
+</html>
